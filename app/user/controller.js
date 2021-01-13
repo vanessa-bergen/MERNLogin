@@ -1,9 +1,10 @@
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const jws = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
 const validateRegisterInput = require("../validation/register.js");
 const validateLoginInput = require("../validation/login.js");
+const keys = require("../../config/keys.js");
 
 module.exports = function() {
 	var User = require('mongoose').model('User');
@@ -26,7 +27,7 @@ module.exports = function() {
 			if (err) return res.status(500).json(err);
 
 			if (user != null) {
-				return res.status(400).json("user already exists");
+				return res.status(400).json({ userExists: "user already exists" });
 			}
 
 			var newUser = new User({
@@ -38,7 +39,7 @@ module.exports = function() {
 			// hash password
 			bcrypt.genSalt(saltRounds, function(err, salt) {
 				bcrypt.hash(newUser.password, salt, function(err, hash) {
-					if (err) return res.status(500).json("error hashing password");
+					if (err) return res.status(500).json({ hashingError : "error hashing password" });
 
 					newUser.password = hash;
 					newUser.save(function(err) {
@@ -50,6 +51,53 @@ module.exports = function() {
 			})
 
 		});
+	}
+
+	c.login = function(req, res) {
+		console.log(JSON.stringify(req.body));
+		const { errors, isValid } = validateLoginInput(req.body);
+
+		if (!isValid) {
+			return res.status(400).json(errors);
+		}
+
+		var userQ = User.findOne({email : req.body.email});
+
+		userQ.exec(function(err, user) {
+			if (err) return res.status(500).json(err);
+
+			if (user == null) {
+				return res.status(400).json({ emailNotFound: "user doesn't exist" });
+			}
+
+			// check that the password entered is correct
+			bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
+				if (!isMatch) {
+					return res.status(400).json({ badPassword: "password is incorrect"})
+				}
+
+				// if passwords match, create JWT payload
+				const payload = {
+					id: user._id,
+					name: user.name
+				};
+
+				// returns the json web token as a string
+				jwt.sign(
+					payload,
+					keys.secretOrKey,
+					{
+						// 1 hour
+						expiresIn: 60 * 60
+					},
+					function(err, token) {
+						if (err) console.log(err);
+						res.json({ success: true, token: "Bearer " + token });
+					}
+				);
+
+			});
+		})
 	}
 
 	return c;
