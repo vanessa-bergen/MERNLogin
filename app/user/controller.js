@@ -27,7 +27,7 @@ module.exports = function() {
 			if (err) return res.status(500).json(err);
 
 			if (user != null) {
-				return res.status(400).json({ userExists: "user already exists" });
+				return res.status(400).json({ userExists: "An account with this email already exists" });
 			}
 
 			var newUser = new User({
@@ -54,6 +54,7 @@ module.exports = function() {
 	}
 
 	c.login = function(req, res) {
+		// this will either return a json web token or a dictionary of errors
 		console.log(JSON.stringify(req.body));
 		const { errors, isValid } = validateLoginInput(req.body);
 
@@ -67,13 +68,13 @@ module.exports = function() {
 			if (err) return res.status(500).json(err);
 
 			if (user == null) {
-				return res.status(400).json({ emailNotFound: "user doesn't exist" });
+				return res.status(400).json({ emailNotFound: "An account with this email does not exist" });
 			}
 
 			// check that the password entered is correct
 			bcrypt.compare(req.body.password, user.password, function(err, isMatch) {
 				if (!isMatch) {
-					return res.status(400).json({ badPassword: "password is incorrect"})
+					return res.status(400).json({ badPassword: "Password is incorrect"})
 				}
 
 				// if passwords match, create JWT payload
