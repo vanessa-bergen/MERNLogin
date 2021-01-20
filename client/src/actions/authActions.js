@@ -35,6 +35,8 @@ export const loginUser = userData => dispatch => {
       // Decode token to get user data
       const decoded = jwt_decode(token);
       // Set current user
+      // this is where if the login was successful, decoded will contain the payload
+      // if there is a payload, isAuthenticated will be set to true and the user data will be stored in the state
       dispatch(setCurrentUser(decoded));
     })
     .catch(err => 
