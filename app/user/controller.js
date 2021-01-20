@@ -31,7 +31,8 @@ module.exports = function() {
 			}
 
 			var newUser = new User({
-				name: req.body.name,
+				firstname: req.body.firstname,
+				lastname: req.body.lastname,
 				email: req.body.email,
 				password: req.body.password
 			});
@@ -78,9 +79,12 @@ module.exports = function() {
 				}
 
 				// if passwords match, create JWT payload
+				// this payload will be store in the state as the user in the auth state
 				const payload = {
 					id: user._id,
-					name: user.name
+					firstname: user.firstname,
+					lastname: user.lastname,
+					email: user.email
 				};
 
 				// returns the json web token as a string

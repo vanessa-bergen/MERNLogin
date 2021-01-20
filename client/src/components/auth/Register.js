@@ -11,7 +11,8 @@ class Register extends Component {
 		super();
 		this.state = {
 			email: "",
-			name: "",
+			firstname: "",
+			lastname: "",
 			password: "",
 			password2: "",
 			errors: {}
@@ -19,7 +20,7 @@ class Register extends Component {
 	}
 
 	componentDidMount() {
-	    // If logged in and user navigates to Login page, should redirect them to dashboard
+	    // If logged in and user navigates to Register page, should redirect them to dashboard
 	    if (this.props.auth.isAuthenticated) {
 	      	this.props.history.push("/");
 	    }
@@ -42,7 +43,8 @@ class Register extends Component {
 	onSubmit = e => {
     	e.preventDefault();
 		const newUser = {
-			name: this.state.name,
+			firstname: this.state.firstname,
+			lastname: this.state.lastname,
       		email: this.state.email,
       		password: this.state.password,
       		password2: this.state.password2
@@ -69,16 +71,31 @@ class Register extends Component {
 						<input
 							className={classnames("form-control", {
                     			// if there is an error for the name this will set invalid: true
-                    			invalid: errors.name
+                    			invalid: errors.firstname
                   			})}
-							placeholder="Name"
+							placeholder="First Name"
 							onChange={this.onChange}
-							value={this.state.name}
-							error={errors.name}
-							id="name"
+							value={this.state.firstname}
+							error={errors.firstname}
+							id="firstname"
 							type="text"
 						/>
-						<div className="err-msg">{errors.name}</div>
+						<div className="err-msg">{errors.firstname}</div>
+					</div>
+					<div className="form-group">
+						<input
+							className={classnames("form-control", {
+                    			// if there is an error for the name this will set invalid: true
+                    			invalid: errors.lastname
+                  			})}
+							placeholder="Last Name"
+							onChange={this.onChange}
+							value={this.state.lastname}
+							error={errors.lastname}
+							id="lastname"
+							type="text"
+						/>
+						<div className="err-msg">{errors.lastname}</div>
 					</div>
 					<div className="form-group">
 						<input
@@ -118,7 +135,7 @@ class Register extends Component {
 							value={this.state.password2}
 							error={errors.password2}
 							id="password2"
-							type="password2"
+							type="password"
 						/>
 						<div className="err-msg">{errors.password2}</div>
 					</div>
