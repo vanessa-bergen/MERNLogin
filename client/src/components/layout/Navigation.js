@@ -12,6 +12,9 @@ class Navigation extends Component {
     	this.props.logoutUser();
   	};
   	render() {
+  		if (!this.props.auth.isAuthenticated) {
+  			return false;
+  		}
 	    return (
 	      <Navbar bg="light" variant="light" expand="lg" sticky="top">
 	        <Navbar.Brand href="/">Home</Navbar.Brand>
@@ -19,7 +22,7 @@ class Navigation extends Component {
 	        <Navbar.Collapse id="basic-navbar-nav">
 	            <Nav className="ml-auto">
 	            <NavDropdown alignRight title="Account" id="basic-nav-dropdown">
-	                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
+	                <NavDropdown.Item href="/myaccount">My Account</NavDropdown.Item>
 
 	                <NavDropdown.Divider />
 	                <NavDropdown.Item onClick={this.onLogoutClick}>Logout</NavDropdown.Item>
