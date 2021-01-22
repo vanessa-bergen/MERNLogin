@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const validateRegisterInput = require("../validation/register.js");
 const validateLoginInput = require("../validation/login.js");
+const { validateUpdateUserInput, validateUpdatePasswordInput } = require("../validation/updateUser.js");
 const keys = require("../../config/keys.js");
 
 module.exports = function() {
@@ -79,11 +80,9 @@ module.exports = function() {
 				}
 
 				// if passwords match, create JWT payload
-				// this payload will be store in the state as the user in the auth state
+				// this payload will be storer in the auth state
 				const payload = {
 					id: user._id,
-					firstname: user.firstname,
-					lastname: user.lastname,
 					email: user.email
 				};
 
@@ -102,6 +101,91 @@ module.exports = function() {
 				);
 
 			});
+		})
+	}
+
+	c.update = function(req, res) {
+		
+		const { errors, isValid } = validateUpdateUserInput(req.body);
+
+		if (!isValid) {
+			return res.status(400).json(errors);
+		}
+
+		var userQ = User.findOneAndUpdate({ _id : req.params.id }, { $set : req.body }, { new : true });
+		userQ.exec(function(err, updatedUser) {
+
+			if (err) return res.status(500).json(err);
+
+			if (updatedUser == null) {
+				return res.status(404).json({ userNotFound: "An account with this id does not exist" });
+			}
+
+			res.status(200).json({
+				firstname: updatedUser.firstname,
+				lastname: updatedUser.lastname,
+				email: updatedUser.email
+			})
+
+		})
+
+	}
+
+	c.changePassword = function(req, res) {
+		const { errors, isValid } = validateUpdatePasswordInput(req.body);
+
+		if (!isValid) {
+			return res.status(400).json(errors);
+		}
+
+		var userQ = User.findById(req.params.id);
+
+		userQ.exec(function(err, user) {
+			if (err) return res.status(500).json(err);
+
+			if (user == null) {
+				return res.status(400).json({ accountNotFound: "An account with this id does not exist" });
+			}
+
+			// check that the password entered is correct
+			bcrypt.compare(req.body.prevPassword, user.password, function(err, isMatch) {
+				if (!isMatch) {
+					return res.status(400).json({ badPassword: "Password is incorrect"})
+				}
+
+				// need to encrypt the new password
+				// hash password
+				bcrypt.genSalt(saltRounds, function(err, salt) {
+					bcrypt.hash(req.body.newPassword1, salt, function(err, hash) {
+						if (err) return res.status(500).json({ hashingError : "error hashing password" });
+
+						user.password = hash;
+						user.save(function(err) {
+							if (err) return res.status(500).json(err);
+
+							console.log("changing the password to ", req.body.newPassword1);
+							res.status(200).json(user)
+						})
+					})
+				})
+			})
+				
+		})
+
+	}
+
+	c.getById = function(req, res) {
+		console.log(req.params.id);
+		var userQ = User.findById(req.params.id);
+		userQ.exec(function(err, user) {
+			if (err) return res.status(500).json(err);
+			console.log(user);
+			if (user == null) {
+				return res.status(404).json({ userNotFound: "An account with this id does not exist" });
+			}
+
+			res.json(user);
+
 		})
 	}
 
