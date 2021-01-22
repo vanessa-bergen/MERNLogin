@@ -1,23 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-//import { logoutUser } from "../../actions/authActions";
 
 class Dashboard extends Component {
-	// onLogoutClick = e => {
- //    	e.preventDefault();
- //    	this.props.logoutUser();
- //  	};
 
   	render() {
-    	const { user } = this.props.auth;
     	return (
-    		<div>
-    			<h4>Hello there {user.name}</h4>
-    			
-    		</div>
-
-
+            <div className="container">
+                <div className="page-title mb-4 mt-4">
+                    <h4>Welcome!</h4>
+                </div>
+            </div>
     	);
     }
 }
