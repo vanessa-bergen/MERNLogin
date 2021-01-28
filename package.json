@@ -20,6 +20,7 @@
     "is-empty": "^1.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.11",
+    "nodemailer": "^6.4.17",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "validator": "^13.5.2"
