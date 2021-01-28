@@ -1,12 +1,5 @@
 H4 {
-	text-align: center;
-}
-
-P {
-	text-align: center;
-	margin: 0;
-	padding:0;
-	line-height: 0.75;
+  text-align: center;
 }
 
 .page-title {
@@ -14,10 +7,14 @@ P {
 }
 
 .err-msg {
-	color: red;
+  color: red;
 }
 
 .invalid {
-	/* want this to override the default styling of the form input */
-	border:1px solid red !important;
+  /* want this to override the default styling of the form input */
+  border:1px solid red !important;
+}
+
+.alertShown {
+	display: none;
 }

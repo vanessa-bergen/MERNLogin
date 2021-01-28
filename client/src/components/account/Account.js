@@ -107,7 +107,7 @@ class Account extends Component {
 
   	return (
   		<div className="container rounded p-3 mt-5 border w-50" id="main">
-        <div className="page-title mb-4 mt-4">
+        <div className="mb-4 mt-4">
           <h4>My Account</h4>
             <form noValidate onSubmit={this.onSubmit}>
               <div className="form-group">

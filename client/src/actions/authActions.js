@@ -25,7 +25,7 @@ export const loginUser = userData => dispatch => {
   axios
     .post("/api/user/login", userData)
     .then(res => {
-      console.log("login successful")
+      console.log("login successful ", res)
       // Save to localStorage
       // Set token to localStorage
       const { token } = res.data;
@@ -37,7 +37,8 @@ export const loginUser = userData => dispatch => {
       // Set current user
       // this is where if the login was successful, decoded will contain the payload
       // if there is a payload, isAuthenticated will be set to true and the user data will be stored in the state
-      dispatch(setCurrentUser(decoded));
+      dispatch(setCurrentUser(decoded))
+      
     })
     .catch(err => 
       dispatch({
@@ -49,6 +50,7 @@ export const loginUser = userData => dispatch => {
       })
     );
 };
+
 // Set logged in user
 export const setCurrentUser = decoded => {
   return {

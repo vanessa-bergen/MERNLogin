@@ -24,7 +24,6 @@ class Login extends Component {
 
 	// check if the user is authenticated when the state changes
 	componentDidUpdate(prevProps) {
-		console.log("component did update: ", prevProps);
 		if (prevProps.auth !== this.props.auth) {
 			if (this.props.auth.isAuthenticated) {
 				this.props.history.push("/");
@@ -98,11 +97,13 @@ class Login extends Component {
           </button>
 
           <div>
-            <p className="mt-4">
+            <p className="mt-4 text-center">
             	Don't have an account?  
             	<Link to="/register"> Register Here!</Link>
             </p>
-            <p>Forgot password?</p>
+            <div className="text-center">
+            	<Link className="text-center" to="/password/recover"> Forgot Password?</Link>
+            </div>
           </div>
 	               
 				</form>
